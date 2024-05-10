@@ -1,11 +1,10 @@
 library(tidyverse)
 library(readr)
 library(stringr)
+library(ggmap)
 
 formuesskatt_kommuner_2022 <- read_delim("Formuesskatt kommuner 2022.csv", 
                                          delim = ";", escape_double = FALSE, trim_ws = TRUE)
-
-
 
 data <- formuesskatt_kommuner_2022 %>%
   mutate(
@@ -15,8 +14,8 @@ data <- formuesskatt_kommuner_2022 %>%
   ) %>%
   mutate(
     Formueskatt = as.numeric(gsub(" ", "", Formueskatt)) * 1000, # Fjerner mellomrom og konverterer til numerisk
-    Helsefagarbeidere = as.numeric(trimws(Helsefagarbeidere)), # Konverterer til numerisk og trimmer
-    Sykepleiere = as.numeric(trimws(Sykepleiere)) # Konverterer til numerisk og trimmer
+    Helsefagarbeidere = as.numeric(gsub(" ", "", Helsefagarbeidere)), # Konverterer til numerisk og trimmer
+    Sykepleiere = as.numeric(gsub(" ", "", Sykepleiere)) # Konverterer til numerisk og trimmer
   ) %>%
   select(Kommunenummer, Kommunenavn, Formueskatt, Helsefagarbeidere, Sykepleiere) %>%
   mutate(
@@ -24,4 +23,8 @@ data <- formuesskatt_kommuner_2022 %>%
     Sted = paste(Kommunenavn, Land, sep = ", ")
   )
 
-print(data)
+write.csv(data, "data.csv")
+
+
+
+
